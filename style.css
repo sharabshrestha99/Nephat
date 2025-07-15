@@ -20,6 +20,12 @@ input {
   font-size: 1rem;
 }
 
+@media (max-width: 600px) {
+  input {
+    width: 95%;
+  }
+}
+
 button {
   padding: 0.5rem 1rem;
   font-size: 1rem;
@@ -33,9 +39,8 @@ button {
 pre {
   background: #eaeaea;
   padding: 1rem;
-  margin-top: 2rem;
+  margin: 2rem auto;
   text-align: left;
   max-width: 600px;
-  margin: 2rem auto;
   overflow-x: auto;
 }

@@ -1,16 +1,17 @@
 let device, server, service, characteristic;
-const serviceUUID = '0000ffe0-0000-1000-8000-00805f9b34fb'; // example UUID (change as needed)
-const characteristicUUID = '0000ffe1-0000-1000-8000-00805f9b34fb'; // change as needed
+const serviceUUID = '0000ffe0-0000-1000-8000-00805f9b34fb'; // BLE service UUID
+const characteristicUUID = '0000ffe1-0000-1000-8000-00805f9b34fb'; // BLE characteristic UUID
+const encoder = new TextEncoder();
 
 function log(msg) {
-  document.getElementById('log').textContent += msg + '\n';
+  document.getElementById('log').insertAdjacentText('beforeend', msg + '\n');
 }
 
 document.getElementById('connect').addEventListener('click', async () => {
   try {
     log("🔍 Requesting Bluetooth device...");
     device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: [serviceUUID] }]
+      filters: [{ services: [serviceUUID.replace(/-/g, '').toLowerCase()] }]
     });
 
     log(`✅ Device selected: ${device.name}`);
@@ -21,13 +22,15 @@ document.getElementById('connect').addEventListener('click', async () => {
     characteristic = await service.getCharacteristic(characteristicUUID);
     log("📡 Connected to characteristic");
 
-    // Optional: Listen for incoming messages
+    // Listen for incoming messages
     await characteristic.startNotifications();
-    characteristic.addEventListener('characteristicvaluechanged', (event) => {
+    characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
+
+    function handleCharacteristicValueChanged(event) {
       const decoder = new TextDecoder('utf-8');
       const received = decoder.decode(event.target.value);
       log("📥 Received: " + received);
-    });
+    }
 
   } catch (error) {
     log("❌ Error: " + error);
@@ -41,8 +44,20 @@ document.getElementById('send').addEventListener('click', async () => {
     return;
   }
 
-  const encoder = new TextEncoder();
   const data = encoder.encode(message);
-  await characteristic.writeValue(data);
-  log("📤 Sent: " + message);
+
+  try {
+    if (typeof characteristic.writeValueWithResponse === 'function') {
+      await characteristic.writeValueWithResponse(data);
+    } else if (typeof characteristic.writeValue === 'function') {
+      await characteristic.writeValue(data);
+    } else {
+      log("❌ Error: No supported write method found on characteristic.");
+      return;
+    }
+
+    log("📤 Sent: " + message);
+  } catch (error) {
+    log("❌ Write failed: " + error);
+  }
 });

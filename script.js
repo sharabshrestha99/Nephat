@@ -11,7 +11,8 @@ document.getElementById('connect').addEventListener('click', async () => {
   try {
     log("🔍 Requesting Bluetooth device...");
     device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: [serviceUUID] }]    });
+      filters: [{ services: [serviceUUID] }] // ✅ Fixed here
+    });
 
     log(`✅ Device selected: ${device.name}`);
     server = await device.gatt.connect();
@@ -21,7 +22,7 @@ document.getElementById('connect').addEventListener('click', async () => {
     characteristic = await service.getCharacteristic(characteristicUUID);
     log("📡 Connected to characteristic");
 
-    // Listen for incoming messages
+    // Optional: Listen for incoming messages
     await characteristic.startNotifications();
     characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
 
@@ -35,6 +36,7 @@ document.getElementById('connect').addEventListener('click', async () => {
     log("❌ Error: " + error);
   }
 });
+
 
 document.getElementById('send').addEventListener('click', async () => {
   const message = document.getElementById('message').value;

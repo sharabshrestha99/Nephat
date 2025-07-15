@@ -11,8 +11,7 @@ document.getElementById('connect').addEventListener('click', async () => {
   try {
     log("🔍 Requesting Bluetooth device...");
     device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: [serviceUUID.replace(/-/g, '').toLowerCase()] }]
-    });
+      filters: [{ services: [serviceUUID] }]    });
 
     log(`✅ Device selected: ${device.name}`);
     server = await device.gatt.connect();

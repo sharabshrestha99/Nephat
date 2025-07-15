@@ -1,0 +1,41 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+  background: #f7f7f7;
+  color: #333;
+  text-align: center;
+}
+
+h1 {
+  color: #2c3e50;
+}
+
+#chat {
+  margin-top: 1rem;
+}
+
+input {
+  padding: 0.5rem;
+  width: 60%;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin: 0.3rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+pre {
+  background: #eaeaea;
+  padding: 1rem;
+  margin-top: 2rem;
+  text-align: left;
+  max-width: 600px;
+  margin: 2rem auto;
+  overflow-x: auto;
+}
